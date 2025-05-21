@@ -1,0 +1,71 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <title>Game with IP Consent</title>
+  <style>
+    #consentPopup {
+      position: fixed;
+      top: 0; left: 0; right: 0; bottom: 0;
+      background: rgba(0,0,0,0.7);
+      display: flex;
+      justify-content: center;
+      align-items: center;
+      color: white;
+      font-family: Arial, sans-serif;
+      z-index: 1000;
+    }
+    #consentBox {
+      background: #222;
+      padding: 20px;
+      border-radius: 8px;
+      max-width: 400px;
+      text-align: center;
+    }
+    button {
+      margin: 10px;
+      padding: 10px 15px;
+      font-size: 16px;
+      cursor: pointer;
+    }
+  </style>
+</head>
+<body>
+  
+  <div id="consentPopup">
+    <div id="consentBox">
+      <p>We collect your IP address to improve the game experience. Do you consent?</p>
+      <button id="acceptBtn">Yes, I consent</button>
+      <button id="denyBtn">No, thanks</button>
+    </div>
+  </div>
+
+  <h1>Welcome to the Game!</h1>
+  <p id="status"></p>
+
+  <script>
+    const consentPopup = document.getElementById('consentPopup');
+    const statusText = document.getElementById('status');
+
+    document.getElementById('acceptBtn').onclick = () => {
+      consentPopup.style.display = 'none';
+      statusText.textContent = "Thank you for consenting! Logging your IP...";
+
+      fetch('/log-ip', { method: 'POST' })
+        .then(response => response.json())
+        .then(data => {
+          statusText.textContent = data.message;
+        })
+        .catch(err => {
+          statusText.textContent = 'Error logging IP.';
+          console.error(err);
+        });
+    };
+
+    document.getElementById('denyBtn').onclick = () => {
+      consentPopup.style.display = 'none';
+      statusText.textContent = "You chose not to share your IP.";
+    };
+  </script>
+</body>
+</html>
